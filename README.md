@@ -4,6 +4,12 @@ A full-stack web application for creating, tracking, and managing shipment statu
 
 ---
 
+## Live Demo
+
+- **Frontend:** https://shipment-tracker-swart-ten.vercel.app/
+- **Backend API:** https://shipment-tracker-api-40ho.onrender.com/
+- **GitHub:** https://github.com/Tejass003/shipment-tracker
+
 ## Overview
 
 The Shipment Status Tracker allows operations teams to:
@@ -58,11 +64,11 @@ Frontend and backend are completely independent deployments. They communicate vi
 | Frontend   | React 18 + Vite     | Fast dev server, standard React ecosystem                       |
 | Language   | TypeScript          | Type safety across the entire stack                             |
 | Routing    | React Router v6     | Standard SPA routing                                            |
-| Styling    | Plain CSS            | Lightweight, no build overhead, no framework lock-in           |
+| Styling    | Plain CSS           | Lightweight, no build overhead, no framework lock-in            |
 | Backend    | Node.js + Express   | Familiar, minimal, well-supported                               |
 | Validation | Zod                 | Schema-first validation with TypeScript inference               |
 | ORM        | Prisma              | Type-safe DB client, migration tooling, readable schema         |
-| Database   | PostgreSQL           | Relational integrity, ACID transactions, mature ecosystem       |
+| Database   | PostgreSQL          | Relational integrity, ACID transactions, mature ecosystem       |
 | Local DB   | Docker Compose      | Zero-install local Postgres without polluting the host system   |
 | Deploy FE  | Vercel              | Native Vite/React support, automatic HTTPS, simple config       |
 | Deploy BE  | Render              | Docker-free Node.js hosting with env var management             |
@@ -98,6 +104,7 @@ A `Shipment` has many `ShipmentStatusHistory` records. When a shipment is create
 ## API Documentation
 
 Base URL (local): `http://localhost:3001`
+Base URL (prod): `https://shipment-tracker-api-40ho.onrender.com/`
 
 ### Health
 
@@ -214,25 +221,22 @@ Get the status history for a shipment in chronological order.
 ### Prerequisites
 - Node.js 18+
 - npm 9+
-- Docker Desktop (for local PostgreSQL)
+- Docker Desktop (for the local PostgreSQL option)
 
 ### 1. Clone and install
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/Tejass003/shipment-tracker.git
 cd shipment-tracker
 ```
 
-### 2. Start the database
+### 2. Start the database (Local Postgres Option)
 
 ```bash
 docker compose up -d
 ```
 
-This starts PostgreSQL on `localhost:5432` with:
-- User: `shipment_user`
-- Password: `shipment_pass`
-- Database: `shipment_tracker`
+This starts PostgreSQL on `localhost:5432` (credentials can be found in `docker-compose.yml`).
 
 ### 3. Set up the backend
 
@@ -240,9 +244,9 @@ This starts PostgreSQL on `localhost:5432` with:
 cd backend
 cp .env.example .env
 npm install
-npm run db:generate   # generates Prisma client
+npm run db:generate     # generates Prisma client
 npm run db:migrate:dev  # runs migrations against local DB
-npm run dev           # starts on http://localhost:3001
+npm run dev             # starts on http://localhost:3001
 ```
 
 ### 4. Set up the frontend
@@ -251,7 +255,7 @@ npm run dev           # starts on http://localhost:3001
 cd ../frontend
 cp .env.example .env
 npm install
-npm run dev           # starts on http://localhost:5173
+npm run dev             # starts on http://localhost:5173
 ```
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
@@ -262,17 +266,17 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ### Backend (`backend/.env`)
 
-| Variable       | Description                                    | Example                                              |
-|----------------|------------------------------------------------|------------------------------------------------------|
-| `DATABASE_URL` | PostgreSQL connection string                    | `postgresql://user:pass@localhost:5432/shipment_tracker` |
-| `PORT`         | Port the server listens on (default 3001)       | `3001`                                               |
-| `FRONTEND_URL` | Allowed CORS origin for the frontend            | `http://localhost:5173`                              |
+| Variable       | Description                                    | Example                                                  |
+|----------------|------------------------------------------------|----------------------------------------------------------|
+| `DATABASE_URL` | PostgreSQL connection string                   | `postgresql://user:pass@localhost:5432/shipment_tracker` |
+| `PORT`         | Port the server listens on (default 3001)      | `3001`                                                   |
+| `FRONTEND_URL` | Allowed CORS origin for the frontend           | `http://localhost:5173`                                  |
 
 ### Frontend (`frontend/.env`)
 
-| Variable        | Description                  | Example                         |
-|-----------------|------------------------------|---------------------------------|
-| `VITE_API_URL`  | Backend API base URL          | `http://localhost:3001`         |
+| Variable       | Description           | Example                   |
+|----------------|-----------------------|---------------------------|
+| `VITE_API_URL` | Backend API base URL  | `http://localhost:3001`   |
 
 ---
 
@@ -307,9 +311,9 @@ npx prisma migrate reset --schema=../prisma/schema.prisma
 
 | Service  | Platform | Notes                                      |
 |----------|----------|--------------------------------------------|
-| Database | Neon     | Serverless PostgreSQL                       |
-| Backend  | Render   | Node.js web service                         |
-| Frontend | Vercel   | Static SPA deployment                       |
+| Database | Neon     | Serverless PostgreSQL                      |
+| Backend  | Render   | Node.js web service                        |
+| Frontend | Vercel   | Static SPA deployment                      |
 
 ### Step 1 — Database (Neon)
 
@@ -324,12 +328,12 @@ npx prisma migrate reset --schema=../prisma/schema.prisma
 3. Set:
    - **Root Directory:** `backend`
    - **Build Command:** `npm install && npm run db:generate && npm run build`
-   - **Start Command:** `npm run db:migrate && npm start`
+   - **Start Command:** `npm start`
 4. Add environment variables:
    - `DATABASE_URL` → your Neon connection string
    - `NODE_ENV` → `production`
-   - `FRONTEND_URL` → (set after Vercel deploy, e.g. `https://your-app.vercel.app`)
-5. Deploy — Render gives you a URL like `https://shipment-tracker-backend.onrender.com`
+   - `FRONTEND_URL` → `https://shipment-tracker-swart-ten.vercel.app/`
+5. Deploy — Render will host your API at `https://shipment-tracker-api-40ho.onrender.com/`
 
 ### Step 3 — Frontend (Vercel)
 
@@ -337,15 +341,14 @@ npx prisma migrate reset --schema=../prisma/schema.prisma
 2. Click **Add New Project** → import your GitHub repository
 3. Set **Root Directory** to `frontend`
 4. Add environment variable:
-   - `VITE_API_URL` → your Render backend URL (e.g. `https://shipment-tracker-backend.onrender.com`)
-5. Deploy — Vercel gives you a URL like `https://your-app.vercel.app`
+   - `VITE_API_URL` → `https://shipment-tracker-api-40ho.onrender.com/`
+5. Deploy — Vercel will host your frontend at `https://shipment-tracker-swart-ten.vercel.app/`
 
 ### Step 4 — Update CORS
 
 After both are deployed:
-- Go to your **Render** service → Environment
-- Update `FRONTEND_URL` to your actual Vercel URL
-- Redeploy (Render may do this automatically)
+- Ensure your **Render** service → Environment has `FRONTEND_URL` set to `https://shipment-tracker-swart-ten.vercel.app/`
+- Redeploy if you updated the variable after initial deployment.
 
 ---
 
