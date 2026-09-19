@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import type { ShipmentStatus, CreateShipmentPayload } from '../types';
-import { ALL_STATUSES } from '../types';
 
 type FormErrors = Partial<Record<keyof CreateShipmentPayload | 'root', string>>;
 
